@@ -18,11 +18,13 @@ package glfw3
 
 import (
 	//	"fmt"
-	"github.com/go-gl/gl"
-	glfw "github.com/grd/glfw3"
-	"github.com/kirillDanshin/go-wde"
+
 	"image"
 	"os"
+
+	"github.com/go-gl/gl/v2.1/gl"
+	glfw "github.com/grd/glfw3"
+	"github.com/kirillDanshin/go-wde"
 )
 
 func init() {
