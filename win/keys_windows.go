@@ -18,6 +18,7 @@ package win
 
 import (
 	"fmt"
+
 	"github.com/AllenDang/w32"
 	"github.com/kirillDanshin/go-wde"
 )
@@ -30,7 +31,7 @@ func (wnd *Window) checkKeyState() {
 	if w32.GetKeyboardState(&keyboard) {
 		/* virtual keys before 0x08 are mouse buttons; skip them */
 		for vk := uintptr(0x08); vk <= 0xff; vk++ {
-			isDown := keyboard[vk] & 0x80 != 0
+			isDown := keyboard[vk]&0x80 != 0
 			key := keyFromVirtualKeyCode(vk)
 			_, wasDown := wnd.keysDown[key]
 			if isDown != wasDown {
@@ -52,12 +53,11 @@ func (wnd *Window) constructChord() string {
 	return wde.ConstructChord(wnd.keysDown)
 }
 
-
 func keyFromVirtualKeyCode(vk uintptr) string {
 	if vk >= '0' && vk <= 'Z' {
 		/* alphanumeric range (windows doesn't use 0x3a-0x40) */
 		if vk >= 'A' {
-			return fmt.Sprintf("%c", vk - 'A' + 'a') // convert to lower case
+			return fmt.Sprintf("%c", vk-'A'+'a') // convert to lower case
 		}
 		return fmt.Sprintf("%c", vk)
 	}

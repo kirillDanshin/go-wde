@@ -18,11 +18,12 @@ package win
 
 import (
 	"errors"
-	"github.com/AllenDang/w32"
-	"github.com/kirillDanshin/go-wde"
 	"image"
 	"runtime"
 	"unsafe"
+
+	"github.com/AllenDang/w32"
+	"github.com/kirillDanshin/go-wde"
 )
 
 func init() {
@@ -51,13 +52,13 @@ type Window struct {
 	bufferback *DIB
 	events     chan interface{}
 
-	keyDown    string // the most recently depressed key
-	keysDown   map[string]bool
-	keysStale  bool // if true, keysDown may not reflect reality
+	keyDown   string // the most recently depressed key
+	keysDown  map[string]bool
+	keysStale bool // if true, keysDown may not reflect reality
 
-	cursor     wde.Cursor // most recently set cursor
+	cursor wde.Cursor // most recently set cursor
 
-	uiTasks    chan func()
+	uiTasks chan func()
 }
 
 /*

@@ -20,13 +20,14 @@ package main
 
 import (
 	"fmt"
-	"github.com/kirillDanshin/go-wde"
-	_ "github.com/kirillDanshin/go-wde/glfw3"
 	"image/color"
 	"math/rand"
 	"runtime"
 	"sync"
 	"time"
+
+	"github.com/kirillDanshin/go-wde"
+	_ "github.com/kirillDanshin/go-wde/glfw3"
 )
 
 func main() {

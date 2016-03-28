@@ -18,14 +18,15 @@ package xgb
 
 import (
 	"fmt"
+	"image"
+	"os"
+
 	"github.com/BurntSushi/xgb/xproto"
 	"github.com/BurntSushi/xgbutil/icccm"
 	"github.com/BurntSushi/xgbutil/keybind"
 	"github.com/BurntSushi/xgbutil/xevent"
 	"github.com/BurntSushi/xgbutil/xgraphics"
 	"github.com/kirillDanshin/go-wde"
-	"image"
-	"os"
 )
 
 func buttonForDetail(detail xproto.Button) wde.Button {
@@ -154,11 +155,11 @@ func (w *Window) handleEvents() {
 
 		case xproto.KeymapNotifyEvent:
 			newDownKeys := make(map[string]bool)
-			for i := 0; i < len(e.Keys); i ++ {
+			for i := 0; i < len(e.Keys); i++ {
 				mask := e.Keys[i]
 				for j := 0; j < 8; j++ {
-					if mask & (1 << uint(j)) != 0 {
-						keycode := xproto.Keycode(8 * (i + 1) + j)
+					if mask&(1<<uint(j)) != 0 {
+						keycode := xproto.Keycode(8*(i+1) + j)
 						key := keyForCode(keybind.LookupString(w.xu, 0, keycode))
 						newDownKeys[key] = true
 					}

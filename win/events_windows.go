@@ -17,12 +17,14 @@
 package win
 
 import (
-	"github.com/AllenDang/w32"
-	"github.com/kirillDanshin/go-wde"
 	"image"
 	"syscall"
 	"unsafe"
+
+	"github.com/AllenDang/w32"
+	"github.com/kirillDanshin/go-wde"
 )
+
 const WDEM_UI_THREAD = w32.WM_APP
 
 type EventData struct {
@@ -59,7 +61,7 @@ func WndProc(hwnd w32.HWND, msg uint32, wparam, lparam uintptr) uintptr {
 	var rc uintptr
 	switch msg {
 	case w32.WM_ACTIVATE:
-		if wparam & 0xffff != 0 {
+		if wparam&0xffff != 0 {
 			/* This window has just been granted focus, so flag our internal
 			** key state as stale. We can't simply refresh our state because
 			** win32's GetKeyboardState isn't always accurate at this point

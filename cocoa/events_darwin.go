@@ -22,8 +22,9 @@ import "C"
 
 import (
 	"fmt"
-	"github.com/kirillDanshin/go-wde"
 	"image"
+
+	"github.com/kirillDanshin/go-wde"
 	// "strings"
 )
 
@@ -142,7 +143,7 @@ func (w *Window) EventChan() (events <-chan interface{}) {
 				var mge wde.MagnifyEvent
 				mge.Where.X = int(e.data[0])
 				mge.Where.Y = int(e.data[1])
-				mge.Magnification = 1 + float64(e.data[2]) / 65536
+				mge.Magnification = 1 + float64(e.data[2])/65536
 				ec <- mge
 			case C.GMDRotate:
 				var rte wde.RotateEvent

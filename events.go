@@ -71,14 +71,14 @@ type MouseExitedEvent MouseMovedEvent
 // MagnifyEvent is used to represent a magnification gesture.
 type MagnifyEvent struct {
 	Event
-	Where image.Point
+	Where         image.Point
 	Magnification float64 // the multiplicative scale factor
 }
 
 // RotateEvent is used to represent a rotation gesture.
 type RotateEvent struct {
 	Event
-	Where image.Point
+	Where    image.Point
 	Rotation float64 // measured in degrees; positive == clockwise
 }
 

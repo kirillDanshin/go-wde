@@ -18,6 +18,10 @@ package xgb
 
 import (
 	"fmt"
+	"image"
+	"os"
+	"sync"
+
 	"github.com/BurntSushi/xgb"
 	"github.com/BurntSushi/xgb/xproto"
 	"github.com/BurntSushi/xgbutil"
@@ -27,9 +31,6 @@ import (
 	"github.com/BurntSushi/xgbutil/xgraphics"
 	"github.com/BurntSushi/xgbutil/xwindow"
 	"github.com/kirillDanshin/go-wde"
-	"image"
-	"os"
-	"sync"
 )
 
 func init() {

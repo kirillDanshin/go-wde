@@ -20,22 +20,23 @@ package cocoa
 import "C"
 
 import (
-	"github.com/kirillDanshin/go-wde"
 	"unsafe"
+
+	"github.com/kirillDanshin/go-wde"
 )
 
-var cursors map[wde.Cursor] unsafe.Pointer
+var cursors map[wde.Cursor]unsafe.Pointer
 
 func init() {
 	C.initMacCursor()
 
-	cursors = map[wde.Cursor]unsafe.Pointer {
-		wde.NoneCursor: nil,
-		wde.NormalCursor: C.cursors.arrow,
-		wde.ResizeNCursor: C.cursors.resizeUp,
-		wde.ResizeECursor: C.cursors.resizeRight,
-		wde.ResizeSCursor: C.cursors.resizeDown,
-		wde.ResizeWCursor: C.cursors.resizeLeft,
+	cursors = map[wde.Cursor]unsafe.Pointer{
+		wde.NoneCursor:     nil,
+		wde.NormalCursor:   C.cursors.arrow,
+		wde.ResizeNCursor:  C.cursors.resizeUp,
+		wde.ResizeECursor:  C.cursors.resizeRight,
+		wde.ResizeSCursor:  C.cursors.resizeDown,
+		wde.ResizeWCursor:  C.cursors.resizeLeft,
 		wde.ResizeEWCursor: C.cursors.resizeLeftRight,
 		wde.ResizeNSCursor: C.cursors.resizeUpDown,
 
@@ -46,9 +47,9 @@ func init() {
 		wde.ResizeSWCursor: C.cursors.pointingHand,
 		wde.ResizeNWCursor: C.cursors.pointingHand,
 
-		wde.CrosshairCursor: C.cursors.crosshair,
-		wde.IBeamCursor: C.cursors.IBeam,
-		wde.GrabHoverCursor: C.cursors.openHand,
+		wde.CrosshairCursor:  C.cursors.crosshair,
+		wde.IBeamCursor:      C.cursors.IBeam,
+		wde.GrabHoverCursor:  C.cursors.openHand,
 		wde.GrabActiveCursor: C.cursors.closedHand,
 		wde.NotAllowedCursor: C.cursors.operationNotAllowed,
 	}

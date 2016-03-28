@@ -21,13 +21,13 @@ import (
 	"github.com/kirillDanshin/go-wde"
 )
 
-var cursorCache map[wde.Cursor] w32.HCURSOR
-var cursorIDC map[wde.Cursor] uint16
+var cursorCache map[wde.Cursor]w32.HCURSOR
+var cursorIDC map[wde.Cursor]uint16
 
 func init() {
 	cursorCache = make(map[wde.Cursor]w32.HCURSOR)
 
-	cursorIDC = map[wde.Cursor]uint16 {
+	cursorIDC = map[wde.Cursor]uint16{
 		wde.NormalCursor:     w32.IDC_ARROW,
 		wde.ResizeNCursor:    w32.IDC_SIZENS,
 		wde.ResizeSCursor:    w32.IDC_SIZENS,

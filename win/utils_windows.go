@@ -19,9 +19,10 @@ package win
 import (
 	"errors"
 	"fmt"
-	"github.com/AllenDang/w32"
 	"syscall"
 	"unsafe"
+
+	"github.com/AllenDang/w32"
 )
 
 var (

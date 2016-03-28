@@ -22,15 +22,15 @@ import (
 	"github.com/kirillDanshin/go-wde"
 )
 
-var cursorCache map[wde.Cursor] xproto.Cursor
-var cursorXIds map[wde.Cursor] uint16
+var cursorCache map[wde.Cursor]xproto.Cursor
+var cursorXIds map[wde.Cursor]uint16
 
 func init() {
 	cursorCache = make(map[wde.Cursor]xproto.Cursor)
 	// the default cursor is always cursor 0 - no need to CreateCursor so cache it up front
 	cursorCache[wde.NormalCursor] = 0
 
-	cursorXIds = map[wde.Cursor]uint16 {
+	cursorXIds = map[wde.Cursor]uint16{
 		wde.ResizeNCursor:    xcursor.TopSide,
 		wde.ResizeECursor:    xcursor.RightSide,
 		wde.ResizeSCursor:    xcursor.BottomSide,

@@ -54,7 +54,7 @@ func (p *DIB) At(x, y int) color.Color {
 // PixOffset returns the index of the first element of Pix that corresponds to
 // the pixel at (x, y).
 func (p *DIB) PixOffset(x, y int) int {
-        return (y-p.Rect.Min.Y)*p.Stride + (x-p.Rect.Min.X)*4
+	return (y-p.Rect.Min.Y)*p.Stride + (x-p.Rect.Min.X)*4
 }
 
 func (p *DIB) Set(x, y int, c color.Color) {
@@ -117,7 +117,7 @@ func (p *DIB) Opaque() bool {
 }
 
 func (p *DIB) CopyRGBA(src *image.RGBA, r image.Rectangle) {
-        // clip r against each image's bounds and move sp accordingly (see draw.clip())
+	// clip r against each image's bounds and move sp accordingly (see draw.clip())
 	sp := src.Bounds().Min
 	orig := r.Min
 	r = r.Intersect(p.Bounds())

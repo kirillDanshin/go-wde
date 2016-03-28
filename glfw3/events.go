@@ -17,11 +17,12 @@
 package glfw3
 
 import (
-	glfw "github.com/grd/glfw3"
-	"github.com/kirillDanshin/go-wde"
 	"image"
 	"math"
 	"time"
+
+	glfw "github.com/grd/glfw3"
+	"github.com/kirillDanshin/go-wde"
 )
 
 var lastCursorPosition image.Point

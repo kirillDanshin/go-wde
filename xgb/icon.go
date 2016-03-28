@@ -18,9 +18,10 @@ package xgb
 
 import (
 	"bytes"
-	"github.com/BurntSushi/xgbutil/ewmh"
 	"image"
 	"image/gif"
+
+	"github.com/BurntSushi/xgbutil/ewmh"
 )
 
 var Gordon image.Image

@@ -18,13 +18,14 @@ package main
 
 import (
 	"fmt"
-	"github.com/kirillDanshin/go-wde"
-	_ "github.com/kirillDanshin/go-wde/init"
 	"image/color"
 	"math/rand"
 	"runtime"
 	"sync"
 	"time"
+
+	"github.com/kirillDanshin/go-wde"
+	_ "github.com/kirillDanshin/go-wde/init"
 )
 
 func main() {
