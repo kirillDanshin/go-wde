@@ -4,13 +4,14 @@ package main
 
 import (
 	"fmt"
-	"github.com/skelterjohn/geom"
-	"github.com/skelterjohn/go.uik"
-	"github.com/skelterjohn/go.uik/layouts"
-	"github.com/skelterjohn/go.uik/widgets"
+	"image/color"
+
 	"github.com/kirillDanshin/go-wde"
 	_ "github.com/kirillDanshin/go-wde/glfw3"
-	"image/color"
+	"github.com/kirillDanshin/go.uik"
+	"github.com/kirillDanshin/go.uik/layouts"
+	"github.com/kirillDanshin/go.uik/widgets"
+	"github.com/skelterjohn/geom"
 )
 
 func main() {
