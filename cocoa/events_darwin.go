@@ -22,7 +22,7 @@ import "C"
 
 import (
 	"fmt"
-	"github.com/skelterjohn/go.wde"
+	"github.com/kirillDanshin/go-wde"
 	"image"
 	// "strings"
 )

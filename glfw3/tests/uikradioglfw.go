@@ -8,8 +8,8 @@ import (
 	"github.com/skelterjohn/go.uik"
 	"github.com/skelterjohn/go.uik/layouts"
 	"github.com/skelterjohn/go.uik/widgets"
-	"github.com/skelterjohn/go.wde"
-	_ "github.com/skelterjohn/go.wde/glfw3"
+	"github.com/kirillDanshin/go-wde"
+	_ "github.com/kirillDanshin/go-wde/glfw3"
 	"image/color"
 )
 

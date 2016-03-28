@@ -19,7 +19,7 @@ package xgb
 import (
 	"github.com/BurntSushi/xgb/xproto"
 	"github.com/BurntSushi/xgbutil/xcursor"
-	"github.com/skelterjohn/go.wde"
+	"github.com/kirillDanshin/go-wde"
 )
 
 var cursorCache map[wde.Cursor] xproto.Cursor

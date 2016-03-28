@@ -20,7 +20,7 @@ package cocoa
 import "C"
 
 import (
-	"github.com/skelterjohn/go.wde"
+	"github.com/kirillDanshin/go-wde"
 	"unsafe"
 )
 

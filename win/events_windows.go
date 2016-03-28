@@ -18,7 +18,7 @@ package win
 
 import (
 	"github.com/AllenDang/w32"
-	"github.com/skelterjohn/go.wde"
+	"github.com/kirillDanshin/go-wde"
 	"image"
 	"syscall"
 	"unsafe"

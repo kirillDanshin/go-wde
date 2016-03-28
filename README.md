@@ -4,4 +4,4 @@
 
 Works on linux, windows, and os x with no setup beyond "go get".
 
-Forked from [skelterjohn/go.wde](https://github.com/skelterjohn/go.wde)
+Forked from [skelterjohn/go.wde](https://github.com/kirillDanshin/go-wde)
