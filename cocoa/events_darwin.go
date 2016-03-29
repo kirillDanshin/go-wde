@@ -33,6 +33,7 @@ func containsGlyph(haystack []string, needle string) bool {
 	return false
 }
 
+// EventChan handles events
 func (w *Window) EventChan() (events <-chan interface{}) {
 	downKeys := make(map[string]bool)
 	ec := make(chan interface{})
@@ -183,7 +184,6 @@ func (w *Window) EventChan() (events <-chan interface{}) {
 			case C.GMDClose:
 				ec <- wde.CloseEvent{}
 				break eventloop
-				return
 			}
 		}
 		close(ec)
