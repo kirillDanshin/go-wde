@@ -6,7 +6,7 @@ import (
 	"unsafe"
 
 	"github.com/AllenDang/w32"
-	"github.com/kirillDanshin/go-wde"
+	wde "github.com/kirillDanshin/go-wde"
 )
 
 const WDEM_UI_THREAD = w32.WM_APP
