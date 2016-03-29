@@ -50,6 +50,7 @@ func init() {
 	}
 }
 
+// SetCursor sets cursor
 func (w *Window) SetCursor(cursor wde.Cursor) {
 	if w.cursor != cursor {
 		w.cursor = cursor

@@ -200,7 +200,14 @@ func (w *Window) handleEvents() {
 			}
 
 		case xproto.ClientMessageEvent:
-			if icccm.IsDeleteProtocol(w.xu, xevent.ClientMessageEvent{&e}) {
+			if icccm.IsDeleteProtocol(
+				w.xu,
+				// it's uses ukeyed fields
+				// but it's ok for now.
+				// it you know how to do it better
+				// please feel free to send a PR
+				xevent.ClientMessageEvent{&e},
+			) {
 				w.events <- wde.CloseEvent{}
 			}
 		case xproto.DestroyNotifyEvent:
@@ -218,6 +225,7 @@ func (w *Window) handleEvents() {
 	close(w.events)
 }
 
+// EventChan sets the chan
 func (w *Window) EventChan() (events <-chan interface{}) {
 	events = w.events
 
