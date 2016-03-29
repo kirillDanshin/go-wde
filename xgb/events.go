@@ -37,6 +37,8 @@ func (w *Window) handleEvents() {
 
 	downKeys := map[string]bool{}
 
+	defer close(w.events)
+
 	for {
 		e, err := w.conn.WaitForEvent()
 
@@ -205,8 +207,6 @@ func (w *Window) handleEvents() {
 		}
 
 	}
-
-	close(w.events)
 }
 
 // EventChan sets the chan
