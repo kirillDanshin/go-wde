@@ -3,6 +3,9 @@
 ## NOTE! IT'S NOT BUILDABLE NOW!
 After some modifications in GLFW/GLFW3 we're unable to build this backend.
 
+### License
+Moved from files and can be found [here](https://github.com/kirillDanshin/go-wde/blob/master/LICENSE)
+
 ### Notes:
 
 - glfw doesn't support icons for the windows (except on the MS Windows platform).
