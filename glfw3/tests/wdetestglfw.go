@@ -14,9 +14,9 @@
    limitations under the License.
 */
 
-package main
-
 // +build ignore
+
+package main
 
 import (
 	"fmt"
