@@ -3,8 +3,10 @@ package xgb
 import (
 	"fmt"
 	"image"
+	"log"
 	"os"
 	"sync"
+	"time"
 
 	"github.com/BurntSushi/xgb"
 	"github.com/BurntSushi/xgb/xproto"
@@ -17,12 +19,14 @@ import (
 	"github.com/kirillDanshin/go-wde"
 )
 
+const frameDuration = 16 * time.Millisecond
+
 func init() {
 	wde.BackendNewWindow = func(width, height int) (w wde.Window, err error) {
 		w, err = NewWindow(width, height)
 		return
 	}
-	ch := make(chan struct{}, 1)
+	ch := make(chan struct{})
 	wde.BackendRun = func() {
 		<-ch
 	}
@@ -31,6 +35,8 @@ func init() {
 	}
 }
 
+// AllEventsMask is a mask for Events
+// that used for listening all events
 const AllEventsMask = xproto.EventMaskKeyPress |
 	xproto.EventMaskKeyRelease |
 	xproto.EventMaskKeymapState |
@@ -41,6 +47,7 @@ const AllEventsMask = xproto.EventMaskKeyPress |
 	xproto.EventMaskPointerMotion |
 	xproto.EventMaskStructureNotify
 
+// Window struct
 type Window struct {
 	win           *xwindow.Window
 	xu            *xgbutil.XUtil
@@ -50,15 +57,18 @@ type Window struct {
 	width, height int
 	lockedSize    bool
 	closed        bool
+	showed        bool
 	cursor        wde.Cursor // most recently set cursor
 
 	events chan interface{}
 }
 
+// NewWindow creates a new window with provided width and height
 func NewWindow(width, height int) (w *Window, err error) {
 
 	w = new(Window)
 	w.width, w.height = width, height
+	w.showed = false
 
 	w.xu, err = xgbutil.NewConn()
 	if err != nil {
@@ -66,14 +76,17 @@ func NewWindow(width, height int) (w *Window, err error) {
 	}
 
 	w.conn = w.xu.Conn()
-	screen := w.xu.Screen()
+	// screen := w.xu.Screen()
 
 	w.win, err = xwindow.Generate(w.xu)
 	if err != nil {
+		log.Printf("ERROR: %#+v\n", err)
 		return
 	}
 
-	err = w.win.CreateChecked(screen.Root, 600, 500, width, height, 0)
+	keybind.Initialize(w.xu)
+
+	err = w.win.CreateChecked(w.xu.RootWin(), 0, 0, width, height, xproto.CwBackPixel, 0x606060ff)
 	if err != nil {
 		return
 	}
@@ -90,6 +103,11 @@ func NewWindow(width, height int) (w *Window, err error) {
 	w.buffer = xgraphics.New(w.xu, image.Rect(0, 0, width, height))
 	w.buffer.XSurfaceSet(w.win.Id)
 
+	// I /think/ XDraw actually sends data to server?
+	w.buffer.XDraw()
+	// I /think/ XPaint tells the server to paint image to window
+	w.buffer.XPaint(w.win.Id)
+
 	keyMap, modMap := keybind.MapsGet(w.xu)
 	keybind.KeyMapSet(w.xu, keyMap)
 	keybind.ModMapSet(w.xu, modMap)
@@ -104,6 +122,7 @@ func NewWindow(width, height int) (w *Window, err error) {
 	return
 }
 
+// SetTitle sets Window title
 func (w *Window) SetTitle(title string) {
 	if w.closed {
 		return
@@ -115,6 +134,7 @@ func (w *Window) SetTitle(title string) {
 	return
 }
 
+// SetSize sets Window size
 func (w *Window) SetSize(width, height int) {
 	if w.closed {
 		return
@@ -128,6 +148,7 @@ func (w *Window) SetSize(width, height int) {
 	return
 }
 
+// Size returns Window width and height
 func (w *Window) Size() (width, height int) {
 	if w.closed {
 		return
@@ -136,6 +157,7 @@ func (w *Window) Size() (width, height int) {
 	return
 }
 
+// LockSize locks Window size
 func (w *Window) LockSize(lock bool) {
 	w.lockedSize = lock
 	w.updateSizeHints()
@@ -153,21 +175,25 @@ func (w *Window) updateSizeHints() {
 	icccm.WmNormalHintsSet(w.xu, w.win.Id, hints)
 }
 
+// Show the window
 func (w *Window) Show() {
-	if w.closed {
+	if w.closed || w.showed {
 		return
 	}
+	w.showed = true
 	w.win.Map()
 }
 
+// Screen returns wde.Image of screen
 func (w *Window) Screen() (im wde.Image) {
 	if w.closed {
 		return
 	}
 	im = &Image{w.buffer}
-	return
+	return im
 }
 
+// FlushImage and draw a new one
 func (w *Window) FlushImage(bounds ...image.Rectangle) {
 
 	if w.closed {
@@ -188,6 +214,7 @@ func (w *Window) FlushImage(bounds ...image.Rectangle) {
 	}
 }
 
+// Close the window
 func (w *Window) Close() (err error) {
 	if w.closed {
 		return
@@ -197,10 +224,12 @@ func (w *Window) Close() (err error) {
 	return
 }
 
+// Image Just an image.
 type Image struct {
 	*xgraphics.Image
 }
 
+// CopyRGBA of image
 func (buffer Image) CopyRGBA(src *image.RGBA, r image.Rectangle) {
 	// clip r against each image's bounds and move sp accordingly (see draw.clip())
 	sp := src.Bounds().Min

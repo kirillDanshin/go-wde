@@ -3,7 +3,8 @@ package main
 import (
 	"fmt"
 	"image/color"
-	"math/rand"
+	"image/gif"
+	"log"
 	"runtime"
 	"sync"
 	"time"
@@ -13,6 +14,9 @@ import (
 )
 
 func main() {
+
+	runtime.GOMAXPROCS(runtime.NumCPU())
+
 	go wdetest()
 	wde.Run()
 
@@ -22,10 +26,53 @@ func main() {
 func wdetest() {
 	var wg sync.WaitGroup
 
-	size := 200
+	size := 300
+
+	// emerland color
+	green := color.RGBA{
+		R: 46,
+		G: 204,
+		B: 113,
+		A: 0,
+	}
+
+	// belize hole color
+	blue := color.RGBA{
+		R: 41,
+		G: 128,
+		B: 185,
+		A: 0,
+	}
+
+	// carrot color
+	yellow := color.RGBA{
+		R: 230,
+		G: 126,
+		B: 34,
+		A: 70,
+	}
+
+	amethyst := color.RGBA{
+		R: 155,
+		G: 89,
+		B: 182,
+		A: 70,
+	}
+
+	image, err := gif.Decode(gordon_gif())
+
+	if err != nil {
+		log.Fatalf("Error: %s", err)
+	}
+
+	ib := image.Bounds()
+	imSize := ib.Size()
+	imWidth := imSize.X
+	imHeight := imSize.Y
 
 	x := func() {
-		offset := time.Duration(rand.Intn(1e9))
+		// offset := time.Duration(8 * time.Millisecond)
+		offset := time.Duration(0)
 
 		dw, err := wde.NewWindow(size, size)
 		if err != nil {
@@ -34,7 +81,6 @@ func wdetest() {
 		}
 		dw.SetTitle("hi!")
 		dw.SetSize(size, size)
-		dw.Show()
 
 		events := dw.EventChan()
 
@@ -53,9 +99,9 @@ func wdetest() {
 				case wde.MouseMovedEvent:
 				case wde.MouseDraggedEvent:
 				case wde.MouseEnteredEvent:
-					fmt.Println("mouse entered", e.Where.X, e.Where.Y)
+					// fmt.Println("mouse entered", e.Where.X, e.Where.Y)
 				case wde.MouseExitedEvent:
-					fmt.Println("mouse exited", e.Where.X, e.Where.Y)
+					// fmt.Println("mouse exited", e.Where.X, e.Where.Y)
 				case wde.MagnifyEvent:
 					fmt.Println("magnify", e.Where, e.Magnification)
 				case wde.RotateEvent:
@@ -81,7 +127,8 @@ func wdetest() {
 					dw.Close()
 					break loop
 				case wde.ResizeEvent:
-					fmt.Println("resize", e.Width, e.Height)
+					// i++
+					// go fmt.Println("resize", e.Width, e.Height)
 				}
 			}
 			done <- true
@@ -91,47 +138,62 @@ func wdetest() {
 		for i := 0; ; i++ {
 			width, height := dw.Size()
 			s := dw.Screen()
+			// for x := 0; x < width; x++ {
+			// 	for y := 0; y < height; y++ {
+			// 		s.Set(x, y, color.White)
+			// 	}
+			// }
+			var pxColor color.RGBA
+
+			imLeft := width/2 - imWidth/2
+			imRight := width/2 + imWidth/2
+			imTop := height/2 - imHeight/2
+			imBottom := height/2 + imHeight/2
+
 			for x := 0; x < width; x++ {
 				for y := 0; y < height; y++ {
-					s.Set(x, y, color.White)
-				}
-			}
-			for x := 0; x < width; x++ {
-				for y := 0; y < height; y++ {
-					var r uint8
-					if x > width/2 {
-						r = 255
-					}
-					var g uint8
-					if y >= height/2 {
-						g = 255
-					}
-					var b uint8
-					if y < height/4 || y >= height*3/4 {
-						b = 255
-					}
-					if i%2 == 1 {
-						r = 255 - r
+
+					// top left
+					if x < width/2 && y <= height/2 {
+						pxColor = green
 					}
 
-					if y > height-10 {
-						r = 255
-						g = 255
-						b = 255
+					// top right
+					if x > width/2 && y <= height/2 {
+						pxColor = yellow
 					}
 
-					if x == y {
-						r = 100
-						g = 100
-						b = 100
+					// bottom left
+					if x < width/2 && y >= height/2 {
+						pxColor = amethyst
 					}
 
-					s.Set(x, y, color.RGBA{r, g, b, 255})
+					// bottom right
+					if x > width/2 && y >= height/2 {
+						pxColor = blue
+					}
+
+					s.Set(x, y, pxColor)
+
+					// if we're in the image part, draw the image
+					if x > imLeft && x < imRight && y > imTop && y < imBottom {
+						imPxColor := image.At(x-imLeft, y-imTop)
+						if _, _, _, a := imPxColor.RGBA(); a != 0 {
+							s.Set(
+								x,
+								y,
+								imPxColor,
+							)
+						}
+					}
+
 				}
 			}
 			dw.FlushImage()
+			dw.Show()
 			select {
-			case <-time.After(5e8 + offset):
+			case <-time.After(offset):
+				dw.FlushImage()
 			case <-done:
 				wg.Done()
 				return
@@ -140,8 +202,8 @@ func wdetest() {
 	}
 	wg.Add(1)
 	go x()
-	wg.Add(1)
-	go x()
+	// wg.Add(1)
+	// go x()
 
 	wg.Wait()
 	wde.Stop()

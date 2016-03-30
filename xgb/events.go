@@ -3,7 +3,9 @@ package xgb
 import (
 	"fmt"
 	"image"
+	"log"
 	"os"
+	"time"
 
 	"github.com/BurntSushi/xgb/xproto"
 	"github.com/BurntSushi/xgbutil/icccm"
@@ -30,6 +32,11 @@ func buttonForDetail(detail xproto.Button) wde.Button {
 }
 
 func (w *Window) handleEvents() {
+	defer func() {
+		recover()
+		w.events <- wde.CloseEvent{}
+		close(w.events)
+	}()
 	var noX int32 = 1<<31 - 1
 	noX++
 	var lastX, lastY int32 = noX, 0
@@ -37,7 +44,50 @@ func (w *Window) handleEvents() {
 
 	downKeys := map[string]bool{}
 
-	defer close(w.events)
+	var (
+		newWidth, newHeight = w.width, w.height
+	)
+	//
+	var resize = func(*Window) {
+		// w.buffer = xgraphics.New(w.xu, image.Rect(0, 0, newWidth, newHeight))
+		if w.width == newWidth &&
+			w.height == newHeight &&
+			w.buffer.Bounds().Dx() == newWidth &&
+			w.buffer.Bounds().Dy() == newHeight {
+			return
+		}
+		var newBuf *xgraphics.Image
+		newBuf = xgraphics.New(w.xu, image.Rect(0, 0, newWidth, newHeight))
+		w.bufferLck.Lock()
+		w.buffer.Destroy()
+		w.buffer = newBuf
+		w.bufferLck.Unlock()
+		w.win.Resize(newWidth, newHeight)
+		w.width, w.height = newWidth, newHeight
+		newBuf = nil
+		var re wde.ResizeEvent
+		re.Width = newWidth
+		re.Height = newHeight
+		w.events <- re
+		go log.Println("resized")
+	}
+
+	go func() {
+		var e interface{}
+		for {
+			select {
+			case e = <-w.events:
+				switch e.(type) {
+				case wde.CloseEvent:
+					return
+				default:
+					continue
+				}
+			case <-time.After(1 * frameDuration):
+				resize(w)
+			}
+		}
+	}()
 
 	for {
 		e, err := w.conn.WaitForEvent()
@@ -171,24 +221,13 @@ func (w *Window) handleEvents() {
 			}
 
 		case xproto.ConfigureNotifyEvent:
-			var re wde.ResizeEvent
-			re.Width = int(e.Width)
-			re.Height = int(e.Height)
-			if re.Width != w.width || re.Height != w.height {
-				w.width, w.height = re.Width, re.Height
-
-				w.bufferLck.Lock()
-				w.buffer.Destroy()
-				w.buffer = xgraphics.New(w.xu, image.Rect(0, 0, re.Width, re.Height))
-				w.bufferLck.Unlock()
-
-				w.events <- re
-			}
+			newWidth = int(e.Width)
+			newHeight = int(e.Height)
 
 		case xproto.ClientMessageEvent:
 			if icccm.IsDeleteProtocol(
 				w.xu,
-				// it's uses ukeyed fields
+				// it's uses unkeyed fields
 				// but it's ok for now.
 				// it you know how to do it better
 				// please feel free to send a PR
@@ -209,9 +248,7 @@ func (w *Window) handleEvents() {
 	}
 }
 
-// EventChan sets the chan
+// EventChan returns the chan
 func (w *Window) EventChan() (events <-chan interface{}) {
-	events = w.events
-
-	return
+	return w.events
 }
